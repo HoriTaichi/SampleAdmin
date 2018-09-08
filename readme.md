@@ -50,6 +50,17 @@ $ php artisan key:generate
 $ vagrant up
 ```
 
+## データベースマイグレーション
+
+VagrantインスタンスにSSHでログインして、データベースマイグレーションを行います。
+
+```
+$ vagrant ssh
+$ cd code
+$ php artisan migrate
+```
+
+
 ## 画面アクセス
 
 http://homestead.test/
