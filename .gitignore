@@ -13,5 +13,7 @@ yarn-error.log
 .env
 .phpunit.result.cache
 /public/fonts/
+/public/css/
+/public/js/
 /public/mix-manifest.json
 package-lock.json
