@@ -5,6 +5,10 @@
 - PHP 7.2.9
 - Laravel Framework 5.7.2
 - MySQL 5.7.23
+- vue ^2.5.17
+- vue-router ^3.0.1
+- vuex ^3.0.1
+- element-ui ^2.4.6
 
 # Homestead 環境構築手順
 
@@ -58,6 +62,12 @@ VagrantインスタンスにSSHでログインして、データベースマイ�
 $ vagrant ssh
 $ cd code
 $ php artisan migrate
+```
+
+## npm install
+
+```
+$ npm install --dev
 ```
 
 
