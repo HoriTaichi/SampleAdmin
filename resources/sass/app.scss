@@ -20,7 +20,15 @@ html, body{
   height: 100%;
 }
 
+.el-header{
+  background-color:#ffffff;
+  box-shadow: 0 0 1px rgba(0,0,0,0.25);
+  color: #333;
+  line-height: 60px;
+}
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
