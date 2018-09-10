@@ -1,14 +1,23 @@
 <template lang="pug">
     el-container()
-        el-aside(width="300px") Aside
+        el-aside(width="200px")
+            side-menu()
         el-container()
             el-header() Header
             el-main() Main
 </template>
 
 <script>
+    import SideMenu from '@/components/common/SideMenu'
     export default {
-        name: "App"
+        components:{
+            SideMenu
+        },
+        data(){
+            return {
+
+            }
+        }
     }
 </script>
 
