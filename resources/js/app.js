@@ -10,6 +10,7 @@ import locale from 'element-ui/lib/locale/lang/ja'
 import App from '@/App.vue'
 import modules from '@/store/index'
 import createPersistedState from 'vuex-persistedstate'
+import routes from '@/routes/index'
 
 
 require('./bootstrap');
@@ -26,14 +27,24 @@ Vue.use(Element, {locale})
  */
 Vue.component('app', App)
 
-
+/**
+ * Store読み込み
+ * @type {Store}
+ */
 const store = new Vuex.Store({
     modules: modules,
     plugins: [createPersistedState]
 })
 
+
+const router = new VueRouter({
+    mode:'hash',
+    routes: routes
+})
+
 const app = new Vue({
     el: '#app',
-    store: store
+    store,
+    router
 });
 

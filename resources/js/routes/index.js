@@ -1,5 +1,14 @@
-import UserStore from '@/store/modules/UserStore'
+import AccountIndex from '@/pages/account/AccountIndex'
 
-export default {
-    userStore : UserStore
-}
+export default [
+
+    // アカウント
+    {
+        path: '/account',
+        name: 'accountIndex',
+        component: AccountIndex,
+        props: (route) => {{query: route.query}}
+
+    }
+]
+

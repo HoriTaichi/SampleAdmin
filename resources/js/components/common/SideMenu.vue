@@ -1,5 +1,5 @@
 <template lang="pug">
-    el-menu.el-menu-vertical-demo(:default-openeds="['1']", :collapse='isCollapse')
+    el-menu.el-menu-vertical-demo(:default-openeds="['3']", :collapse='isCollapse')
         el-menu-item(index='2', v-show='!isCollapse', v-on:click='clickArrowLift')
             i.el-icon-d-arrow-left
         el-menu-item(index='2', v-show='isCollapse', v-on:click='clickArrowRight')
@@ -12,6 +12,11 @@
             el-menu-item(index='1-2', @click="$router.push({name: 'testPatternIndex'})") テストパターン
             el-menu-item(index='1-3', @click="$router.push({name: 'lpPatternIndex'})") LPパターン
             el-menu-item(index='1-4', @click="$router.push({name: 'daily'})") 日次レポート
+        el-submenu(index='3')
+            template(slot='title')
+                i.el-icon-menu
+                span(slot='title') 管理者用メニュー
+            el-menu-item(index='3-1', @click="$router.push({name: 'accountIndex'})") アカウント管理
 </template>
 <script>
     export default {

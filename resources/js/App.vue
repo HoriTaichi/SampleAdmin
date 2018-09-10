@@ -5,7 +5,8 @@
         el-container()
             el-header()
                 header-bar()
-            el-main() Main
+            el-main()
+                router-view()
 </template>
 
 <script>
