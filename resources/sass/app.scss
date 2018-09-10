@@ -23,12 +23,26 @@ html, body{
 .el-header{
   background-color:#ffffff;
   box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  color: #333;
   line-height: 60px;
+}
+
+.el-dialog__title{
+  color: #fff !important;
+}
+
+.el-dialog__header{
+  background-color: #455a64;
+  border-bottom: 1px solid #cccccc;
+}
+
+
+.el-dialog__footer{
+  border-top: 1px solid #cccccc;
 }
 
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
 
