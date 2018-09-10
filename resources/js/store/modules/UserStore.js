@@ -1,8 +1,14 @@
+import Constants from '@/utils/Constants'
 export default {
     state:{
-        accountId: 0,
+        accountId: '',
         accountName: '',
         role: '',
+    },
+    getters:{
+        getRoleName: state => {
+            return Constants.ROLE.NAMES[state.role]
+        }
     },
     mutations: {
         updateUser(state, payload){

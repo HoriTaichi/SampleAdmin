@@ -8,6 +8,8 @@ import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/ja'
 import App from '@/App.vue'
+import modules from '@/store/index'
+import createPersistedState from 'vuex-persistedstate'
 
 
 require('./bootstrap');
@@ -21,11 +23,17 @@ Vue.use(Element, {locale})
 
 /**
  *
- * @type {CombinedVueInstance<V extends Vue, Object, Object, Object, Record<never, any>>}
  */
 Vue.component('app', App)
 
+
+const store = new Vuex.Store({
+    modules: modules,
+    plugins: [createPersistedState]
+})
+
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store: store
 });
 
