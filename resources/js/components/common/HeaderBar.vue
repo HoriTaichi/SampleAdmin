@@ -1,49 +1,25 @@
 <template lang="pug">
-    el-menu.el-menu-vertical-demo(:default-openeds="['1']", :collapse='isCollapse')
-        el-menu-item(index='2', v-show='!isCollapse', v-on:click='clickArrowLift')
-            i.el-icon-d-arrow-left
-        el-menu-item(index='2', v-show='isCollapse', v-on:click='clickArrowRight')
-            i.el-icon-d-arrow-right
-        el-submenu(index='1')
-            template(slot='title')
-                i.el-icon-menu
-                span(slot='title') メニュー
-            el-menu-item(index='1-1', @click="$router.push({name: 'campaignIndex'})") キャンペーン
-            el-menu-item(index='1-2', @click="$router.push({name: 'testPatternIndex'})") テストパターン
-            el-menu-item(index='1-3', @click="$router.push({name: 'lpPatternIndex'})") LPパターン
-            el-menu-item(index='1-4', @click="$router.push({name: 'daily'})") 日次レポート
+    el-row.row-bg(type='flex')
+        div(style='text-overflow:ellipsis;white-space:nowrap;width:100%;overflow:hidden;text-align:right')
+            | {{$store.getters.getRoleName}} | {{user.accountName}} &nbsp;&nbsp;
+        div
+            el-dropdown
+                i.el-icon-setting(style='margin-right: 15px')
+                el-dropdown-menu(slot='dropdown')
+                    el-dropdown-item
+                        a(href='/logout') ログアウト
 </template>
 <script>
     export default {
         data() {
             return {
-                isCollapse: false,
-                auto: 'auto'
+                user: this.$store.state.userStore
+
             };
         },
         methods: {
-
-            clickSideMenu: function(path){
-                location.href = path
-            },
-
-            clickArrowLift: function(){
-                this.isCollapse = true;
-                this.auto = 'auto';
-            },
-            clickArrowRight: function(){
-                this.isCollapse = false;
-                this.auto = '200px';
-            }
         }
     }
 </script>
 <style scoped>
-    .isCollapse{
-        overflow:visible
-    }
-    .el-menu-vertical-demo:not(.el-menu--collapse) {
-        width: 200px;
-        min-height: 400px;
-    }
 </style>
