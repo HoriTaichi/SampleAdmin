@@ -14,7 +14,7 @@ class ApiController extends Controller
     public function __construct()
     {
         // 認証が必要
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
 
 
