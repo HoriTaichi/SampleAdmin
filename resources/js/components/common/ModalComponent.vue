@@ -1,54 +1,90 @@
 <template lang="pug">
-    el-menu.el-menu-vertical-demo(:default-openeds="['3']", :collapse='isCollapse')
-        el-menu-item(index='2', v-show='!isCollapse', v-on:click='clickArrowLift')
-            i.el-icon-d-arrow-left
-        el-menu-item(index='2', v-show='isCollapse', v-on:click='clickArrowRight')
-            i.el-icon-d-arrow-right
-        el-submenu(index='1')
-            template(slot='title')
-                i.el-icon-menu
-                span(slot='title') メニュー
-            el-menu-item(index='1-1', @click="$router.push({name: 'campaignIndex'})") キャンペーン
-            el-menu-item(index='1-2', @click="$router.push({name: 'testPatternIndex'})") テストパターン
-            el-menu-item(index='1-3', @click="$router.push({name: 'lpPatternIndex'})") LPパターン
-            el-menu-item(index='1-4', @click="$router.push({name: 'daily'})") 日次レポート
-        el-submenu(index='3')
-            template(slot='title')
-                i.el-icon-menu
-                span(slot='title') 管理者用メニュー
-            el-menu-item(index='3-1', @click="$router.push({name: 'accountIndex'})") アカウント管理
+    div
+        el-dialog(
+            :title="title"
+            :visible.sync="visible"
+            :before-close="onClose"
+        )
+            component(
+                v-loading="loading"
+                v-bind:is="component"
+                ref="modalComponent"
+                :id="id"
+                :data="data"
+                @on-success="onSuccess"
+                @on-cancel="onCancel"
+                @loading="changeLoading"
+                @set-modal-title="setModalTitle"
+                @set-submit-button-name="setSubmitButtonName"
+                @set-cancel-button-name="setCancelButtonName"
+            )
+            span(class="dialog-footer" slot='footer')
+                el-button(@click="cancelChild" :disabled="loading") {{cancelButtonName}}
+                el-button(type="primary" @click="submitChild" :disabled="loading") {{submitButtonName}}
 </template>
 <script>
     export default {
         data() {
             return {
-                isCollapse: false,
-                auto: 'auto'
+                visible: false,
+                loading: false,
+                title: '',
+                submitButtonName: '保存する',
+                cancelButtonName: 'キャンセル',
             };
         },
+        props:[
+            'id',
+            'component',
+            'data'
+        ],
+        watch:{
+            component: function(){
+                if(this.component !== ''){
+                    this.visible = true
+                }else{
+                    this.visible = false
+                }
+            }
+        },
         methods: {
-
-            clickSideMenu: function(path){
-                location.href = path
+            setModalTitle: function (title) {
+                this.title = title
             },
-
-            clickArrowLift: function(){
-                this.isCollapse = true;
-                this.auto = 'auto';
+            setSubmitButtonName: function (name) {
+                this.submitButtonName = name
             },
-            clickArrowRight: function(){
-                this.isCollapse = false;
-                this.auto = '200px';
+            setCancelButtonName: function (name) {
+                this.cancelButtonName = name
+            },
+            onSuccess: function () {
+                this.close(true)
+            },
+            onCancel: function(){
+                this.close(false)
+            },
+            onClose: function(){
+                this.close(false)
+            },
+            changeLoading: function(loading){
+                this.loading = loading
+            },
+            cancelChild: function(){
+                this.$refs.modalComponent.onCancel()
+            },
+            submitChild: function(){
+                this.$refs.modalComponent.onSubmit()
+            },
+            close: function(hasChanged){
+                this.visible = false;
+                this.loading = false;
+                this.title = '';
+                this.submitButtonName = '保存する';
+                this.cancelButtonName = 'キャンセル';
+                this.$emit('on-close', hasChanged)
             }
         }
     }
 </script>
 <style scoped>
-    .isCollapse{
-        overflow:visible
-    }
-    .el-menu-vertical-demo:not(.el-menu--collapse) {
-        width: 200px;
-        min-height: 400px;
-    }
 </style>
