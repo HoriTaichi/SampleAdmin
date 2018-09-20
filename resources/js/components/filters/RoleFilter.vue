@@ -9,7 +9,7 @@
                 labelList:[
                     {value: '', label: 'すべて'},
                     {value: '50', label: 'Admin'},
-                    {value: '40', label: '媒体者'},
+                    {value: '40', label: '媒体社'},
                     {value: '30', label: '代理店'},
                     {value: '20', label: '広告主'},
                     {value: '10', label: '確認用'},
