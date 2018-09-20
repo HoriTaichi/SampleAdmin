@@ -35,14 +35,20 @@ class ApiController extends Controller
             }
             $reason[$key][] = $message[0];
         }
-        // 返却用情報設定
+        // invalidParams設定
         foreach ($reason as $key => $message_list){
             $invalidParams[] = [
               'name' => $key,
-              'reason' => $message_list,
+              'reasons' => $message_list,
             ];
         }
-        return Response::json($invalidParams, 400);
+        // 返却用情報設定
+        $result = [
+           'title' => '入力に誤りがあります。',
+           'invalidParams' => $invalidParams
+        ];
+
+        return Response::json($result, 400);
     }
 
 }
