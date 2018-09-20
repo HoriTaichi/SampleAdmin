@@ -4,16 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-use App\Models\Account;
+use App\Models\Staff;
 use Illuminate\Support\Facades\Validator;
-use App\Utils\StringUtil;
 use DB;
 
 
-class AccountsApiController extends ApiController
+class StaffsApiController extends ApiController
 {
     /**
-     * アカウントリスト取得
+     * 社員リスト取得
      *
      * @param Request $request
      * @return array|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
@@ -30,16 +29,9 @@ class AccountsApiController extends ApiController
         if($validator->fails()){
             return $this->responseInvalidation($validator);
         }
-
-        $account = Account::query();
-        if(StringUtil::isNotEmpty($request->input('role'))){
-            $account->where('role', '=', $request->input('role'));
-        }
-        if(StringUtil::isNotEmpty($request->input('status'))){
-            $account->where('status', '=', $request->input('status'));
-        }
-
-        return $account->get();
+        $staff = Staff::query();
+        $staff->where('status', '<>', 99);
+        return $staff->get();
     }
 
     /**
@@ -53,21 +45,18 @@ class AccountsApiController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * 社員登録
+     * @param Request $request
+     * @return mixed
      */
     public function store(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
             [
-                'accountName' => ['required'],
-                'loginId' => ['required'],
-                'password' => ['required'],
-                'role' => ['required'],
-                'status' => ['required'],
+                'staffName' => ['required'],
+                'staffNameRuby' => [''],
+                'slackId' => [''],
             ]
         );
         if($validator->fails()){
@@ -75,12 +64,10 @@ class AccountsApiController extends ApiController
         }
 
         // 登録
-        DB::table('accounts')->insert([
-            'role' => $request->input('role'),
-            'status' => $request->input('status'),
-            'login_id' => $request->input('loginId'),
-            'account_name' => $request->input('accountName'),
-            'password_hash' => password_hash($request->input('password'), PASSWORD_BCRYPT)
+        DB::table('staffs')->insert([
+            'staff_name' => $request->input('staffName'),
+            'staff_name_ruby' => $request->input('staffNameRuby'),
+            'slack_id' => $request->input('slackId'),
         ]);
     }
 
