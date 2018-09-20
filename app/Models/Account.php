@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends Model
 {
     //
-    protected $tables = 'accounts';
+    protected $table = 'accounts';
 }
