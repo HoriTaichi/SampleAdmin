@@ -1,26 +1,36 @@
 export default {
-    ROLE:{
-        // 権限：10:確認用、20:広告主、30:代理店、40:媒体社、50:管理者
-        ADMIN: '50',
-        MEDIA: '40',
-        AGENCY: '30',
-        ADVERTISER: '20',
-        VIEWONLY: '10',
-        NAMES:{
-            '50': 'Admin',
-            '40': '媒体者',
-            '30': '代理店',
-            '20': '広告主',
-            '10': '確認用'
-        }
 
-    },
-    ACCOUNT_STATUS:{
-        NAMES:{
-            '1': '稼働中',
-            '2': '停止中',
-            '3': '審査中',
-            '99': '削除',
+    /**
+     * API実行した結果、エラーだった場合はこの処理が呼ばれる
+     */
+    methods:{
+        bindAxiosError: function(error, errors){
+            if(error.response){
+                // ステータスコードチェック
+                if(error.response.status === 401){
+                    // 権限エラー
+                    this.$message.error('権限エラー')
+                }else if(error.response.status === 500){
+                    // システムエラー
+                    this.$message.error('システムエラー')
+                }else{
+                    if(error.response.data.invalidParams){
+                        for(let invalidParam of error.response.data.invalidParams){
+                            let name = invalidParam.name
+                            let reasons = invalidParam.reasons
+
+                            // １項目に複数のエラーメッセージがあった場合、最後のエラーメッセージを表示するようにする
+                            for(let reason of reasons){
+                                errors[name] = reason
+                            }
+                        }
+                    }
+                    this.$message.error(error.response.data.title)
+                }
+            }else{
+                this.$message.error('Connection　Error!')
+            }
+
         }
     }
 }
