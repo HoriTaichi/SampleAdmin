@@ -1,5 +1,6 @@
 <template lang="pug">
     div
+        modal-component(:component="currentModalComponent" :id="currentModalId" @on-close="closeModal")
         div(class="search-field")
             //- ロール種別
             role-filter(v-model="filter.role")
@@ -28,8 +29,11 @@
     import RoleFilter from '@/components/filters/RoleFilter'
     import AccountStatusFilter from '@/components/filters/AccountStatusFilter'
     import Constants from '@/utils/Constants'
+    import ModalComponent from '@/components/common/ModalComponent'
+    import AccountCreate from '@/components/modals/account/AccountCreate'
     export default {
         components:{
+            ModalComponent,
             RoleFilter,
             AccountStatusFilter
         },
@@ -52,6 +56,8 @@
               },
               accounts: [],
               loading: false,
+              currentModalId: '',
+              currentModalComponent: '',
           }
         },
         created: function () {
@@ -85,7 +91,15 @@
                 })
             },
             showCreate(){
-
+                this.currentModalId = '',
+                this.currentModalComponent = AccountCreate
+            },
+            closeModal: function(hasChanged){
+                this.currentModalId = ''
+                this.currentModalComponent = ''
+                if(hasChanged === true){
+                    this.changeQuery()
+                }
             },
             getRoleName(role){
                 return Constants.ROLE.NAMES[role]

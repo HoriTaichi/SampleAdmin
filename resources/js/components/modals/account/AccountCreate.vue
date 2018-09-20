@@ -1,36 +1,52 @@
 <template lang="pug">
     div
-        el-dialog(
-            :title="title"
-            :visible.sync="visible"
-            :before-close="onClose"
-        )
-            component(
-                v-loading="loading"
-                v-bind:is="component"
-                ref="modalComponent"
-                :id="id"
-                :data="data"
-                @on-success="onSuccess"
-                @on-cancel="onCancel"
-                @loading="changeLoading"
-                @set-modal-title="setModalTitle"
-                @set-submit-button-name="setSubmitButtonName"
-                @set-cancel-button-name="setCancelButtonName"
-            )
-            span(class="dialog-footer" slot='footer')
-                el-button(@click="cancelChild" :disabled="loading") {{cancelButtonName}}
-                el-button(type="primary" @click="submitChild" :disabled="loading") {{submitButtonName}}
+        el-form(label-width="120px")
+            el-form-item(label="アカウント名" :rules="[{required: true}]" :error="errors.accountName")
+                el-input(v-model="form.accountName")
+            el-form-item(label="ログインID" :rules="[{required: true}]"  :error="errors.loginId")
+                el-input(v-model="form.loginId")
+            el-form-item(label="パスワード" :rules="[{required: true}]"  :error="errors.password")
+                el-input(v-model="form.password" type="password")
+            el-form-item(label="ロール" :rules="[{required: true}]" :error="errors.role")
+                el-radio-group(v-model="form.role")
+                    el-radio(label="50") Admin
+                    el-radio(label="40") 媒体社
+                    el-radio(label="30") 代理店
+                    el-radio(label="20") 広告主
+                    el-radio(label="10") 確認用
+            el-form-item(label="ステータス" :rules="[{required: true}]" :error="errors.status")
+                el-radio-group(v-model="form.status")
+                    el-radio(label="1") 稼働中
+                    el-radio(label="2") 停止中
+                    el-radio(label="3") 審査中
 </template>
 <script>
+    import AxiosMixIn from '@/mixins/AxiosMixIn'
     export default {
+        mixins: [
+            AxiosMixIn
+        ],
         data() {
             return {
                 visible: false,
                 loading: false,
-                title: '',
                 submitButtonName: '保存する',
                 cancelButtonName: 'キャンセル',
+                form:{
+                    accountName: '',
+                    loginId: '',
+                    password:'',
+                    role: '',
+                    status:'',
+                },
+                errors:{
+                    accountName: '',
+                    loginId: '',
+                    password:'',
+                    role: '',
+                    status:'',
+                }
+
             };
         },
         props:[
@@ -41,37 +57,38 @@
         watch:{
 
         },
+        created() {
+            this.$emit('set-modal-title', 'アカウント新規作成')
+        },
         methods: {
-            setModalTitle: function (title) {
-                this.title = title
+            resetErrors: function(){
+                for(let error in this.errors){
+                    this.errors[error] = ''
+                }
             },
-            setSubmitButtonName: function (name) {
-                this.submitButtonName = name
-            },
-            setCancelButtonName: function (name) {
-                this.cancelButtonName = name
-            },
-            onSuccess: function () {
-                this.close(true)
+            onSubmit: function(){
+                let app = this
+                app.resetErrors()
+                app.loading = true
+                axios.post('/api/accounts', {
+                    accountName: this.form.accountName,
+                    loginId: this.form.loginId,
+                    password: this.form.password,
+                    role: this.form.role,
+                    status: this.form.status
+                }).then(function(){
+                    app.$message.success('保存しました。')
+                    app.loading = false
+                    app.$emit('on-success')
+                }).catch(function(error){
+                    app.bindAxiosError(error, app.errors)
+                    app.loading = false
+                })
             },
             onCancel: function(){
-                this.close(false)
-            },
-            onClose: function(){
-                this.close(false)
-            },
-            changeLoading: function(loading){
-                this.loading = loading
-            },
-            cancelChild: function(){
-                this.$refs.modalComponent.onCancel()
-            },
-            submitChild: function(){
-                this.$refs.modalComponent.onSubmit()
-            },
-            close: function(hasChanged){
-                this.$emit('on-close', hasChanged)
+                this.$emit('on-cancel')
             }
+
         }
     }
 </script>
