@@ -9,7 +9,7 @@
                 el-input(v-model="form.password" type="password")
             el-form-item(label="ロール" :rules="[{required: true}]" :error="errors.role")
                 el-radio-group(v-model="form.role")
-                    el-radio(label="50") Admin
+                    el-radio(label="50") 管理者
                     el-radio(label="40") 媒体社
                     el-radio(label="30") 代理店
                     el-radio(label="20") 広告主
