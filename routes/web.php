@@ -4,6 +4,9 @@
 // Root
 Route::get('/', 'RootController@index');
 
+// 記事カスタマイズのrootはこちら
+Route::get('/doc', 'RootController@doc');
+
 
 // Login
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');

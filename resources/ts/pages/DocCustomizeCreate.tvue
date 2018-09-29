@@ -1,0 +1,33 @@
+<template lang="pug">
+    el-container()
+        | 3333
+</template>
+
+<script>
+    export default {
+        props: {
+            accountId: String,
+            accountName: String,
+            role: String,
+        },
+        computed:{
+            user : function(){
+                return {
+                    accountId: this.accountId,
+                    accountName: this.accountName,
+                    role: this.role
+                }
+            }
+        },
+        data(){
+            return {
+            }
+        },
+        created(){
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

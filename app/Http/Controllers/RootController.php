@@ -26,4 +26,14 @@ class RootController extends Controller
     {
         return view('root', []);
     }
+
+    /**
+     * 記事カスタマイマイズ
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function doc()
+    {
+        return view('doc', []);
+    }
 }
