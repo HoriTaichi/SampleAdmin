@@ -5,14 +5,12 @@
         abstract : false,
         data(){
             return {
-                title : 'ロール',
+                title : '集計数値',
                 labelList:[
-                    {value: '', label: 'すべて'},
-                    {value: '50', label: 'Admin'},
-                    {value: '40', label: '媒体社'},
-                    {value: '30', label: '代理店'},
-                    {value: '20', label: '広告主'},
-                    {value: '10', label: '確認用'},
+                    {value: 'widgetImp', label: 'Widget Imp'},
+                    {value: 'click', label: 'Click'},
+                    {value: 'cv', label: 'CV'},
+                    {value: 'inviewRate', label: 'Inview率'},
                 ]
             }
         }
