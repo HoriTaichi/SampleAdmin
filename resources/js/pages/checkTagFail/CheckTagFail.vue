@@ -3,10 +3,12 @@
         div(class="search-field")
             //- 集計数値
             aggregate-value-filter(v-model="filter.aggregateValue")
+            //- 合計欄
+            summary-tag-fall-filter(v-model="filter.summary" v-if="filter.aggregateValue === 'widgetImp'")
             //- ステータス
             account-status-filter(v-model="filter.status")
-        div(class="heading") アカウント管理
-        el-table(:data="matchedReport" v-loading="loading" size="mini" border stripe)
+        div(class="heading") タグ落ち確認
+        el-table(:data="matchedReport" v-loading="loading" size="mini" border stripe :show-summary="filter.aggregateValue === 'widgetImp'" :summary-method="getSummaries")
             el-table-column(label="ウィジェットID" prop="widget_id")
             el-table-column(label="ウィジェット名" prop="widget_name")
             el-table-column(label="担当者" prop="staff_id")
@@ -16,18 +18,20 @@
             template(v-for="current in reports.dateLists")
                 el-table-column(:label="current.date")
                     el-table-column(:label="aggregateValueName")
-                        template(slot-scope="scope" )
+                        template(slot-scope="scope")
                             div(:class="{ aaaa: scope.row.logs[current.date].tagFail }") {{scope.row.logs[current.date].value}}
 </template>
 
 <script>
     import axios from 'axios'
     import AggregateValueFilter from '@/components/filters/AggregateValueFilter'
+    import SummaryTagFallFilter from '@/components/filters/SummaryTagFallFilter'
     import AccountStatusFilter from '@/components/filters/AccountStatusFilter'
     import Constants from '@/utils/Constants'
     export default {
         components:{
             AggregateValueFilter,
+            SummaryTagFallFilter,
             AccountStatusFilter
         },
         props:{
@@ -40,6 +44,9 @@
             'filter.status': function(){
                 this.changeQuery()
             },
+            'filter.summary': function(){
+                this.changeQuery()
+            }
         },
         computed:{
 
@@ -118,6 +125,7 @@
             return {
                 filter: {
                     aggregateValue: 'widgetImp',
+                    summary: 'tagFallSum',
                     status: ''
                 },
                 reports: {
@@ -175,6 +183,46 @@
             },
             getWidgetStatus(status){
                 return Constants.WIDGET_STATUS.NAMES[status]
+            },
+            getSummaries(param){
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    if (index === 0) {
+                        if(this.filter.summary === 'tagFallSum'){
+                            sums[index] = '落下imp数';
+                        }else{
+                            sums[index] = '停止数';
+                        }
+                        return;
+                    }
+
+                    if (index === 2 || index === 3){
+                        sums[index] = '';
+                        return;
+                    }
+                    sums[index] = '';
+                })
+
+
+                let cnt = 0
+                for(let currentDate of this.reports.dateLists){
+                    let sum = 0
+                    for(let row of this.matchedReport) {
+                        if(row.logs[currentDate.date].tagFail){
+                            if(this.filter.summary === 'tagFallSum'){
+                                sum += row.logs[currentDate.date].value
+                            }else{
+                                sum++;
+                            }
+                        }
+                    }
+                    sums[cnt + 4] = sum
+                    cnt++
+
+                }
+
+                return sums
             }
         }
     }
