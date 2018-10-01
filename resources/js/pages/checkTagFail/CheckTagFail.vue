@@ -16,8 +16,8 @@
             template(v-for="current in reports.dateLists")
                 el-table-column(:label="current.date")
                     el-table-column(:label="aggregateValueName")
-                        template(slot-scope="scope")
-                            span() {{scope.row.logs[current.date].value}}
+                        template(slot-scope="scope" )
+                            div(:class="{ aaaa: scope.row.logs[current.date].tagFail }") {{scope.row.logs[current.date].value}}
 </template>
 
 <script>
@@ -51,14 +51,35 @@
             adjustReports: function(){
                 let details = this.reports.details
                 for(let detail of details){
-                    for(let key in detail.logs){
-                        switch(this.filter.aggregateValue){
 
+                    let preDate = ''
+                    for(let key in detail.logs){
+
+                        detail.logs[key].tagFail = false
+                        switch(this.filter.aggregateValue){
                             case 'widgetImp':
                                 detail.logs[key].value = detail.logs[key].imp
+                                if(detail.logs[key].value === 0){
+                                    detail.logs[key].tagFail = true
+                                }else if(
+                                    preDate !== '' && detail.logs[preDate].value !== 0 &&
+                                    ((detail.logs[preDate].value - detail.logs[key].value) >= this.boader.widgetImp.decreaseValue) &&
+                                    ((detail.logs[preDate].value - detail.logs[key].value) / detail.logs[preDate].value * 100  >= this.boader.widgetImp.decreaseRate)
+                                ){
+                                    detail.logs[key].tagFail = true
+                                }
                                 break
                             case 'click':
                                 detail.logs[key].value = detail.logs[key].click
+                                if(detail.logs[key].value === 0){
+                                    detail.logs[key].tagFail = true
+                                }else if(
+                                    preDate !== '' && detail.logs[preDate].value !== 0 &&
+                                    ((detail.logs[preDate].value - detail.logs[key].value) >= this.boader.click.decreaseValue) &&
+                                    ((detail.logs[preDate].value - detail.logs[key].value) / detail.logs[preDate].value * 100  >= this.boader.click.decreaseRate)
+                                ){
+                                    detail.logs[key].tagFail = true
+                                }
                                 break
                             case 'cv':
                                 detail.logs[key].value = detail.logs[key].cv
@@ -67,9 +88,11 @@
                                 detail.logs[key].value = (detail.logs[key].inview === 0) ? 0 : (detail.logs[key].inview / detail.logs[key].imp) * 100
                                 break
                         }
-
+                        preDate = key
                     }
                 }
+
+
                 return details
             },
 
@@ -97,15 +120,21 @@
                     aggregateValue: 'widgetImp',
                     status: ''
                 },
-                accounts: [],
-                loading: false,
-                currentModalId: '',
-                currentModalComponent: '',
-
                 reports: {
                     dateLists: [],
                     details: [],
                 },
+                boader:{
+                    widgetImp :{
+                        decreaseRate : 90,
+                        decreaseValue : 30000,
+                    },
+                    click :{
+                        decreaseRate : 90,
+                        decreaseValue : 100,
+                    },
+                },
+                loading: false,
             }
 
         },
@@ -122,23 +151,7 @@
                     status: this.filter.status
                 }
                 this.$router.replace({path: '/check-tag-fail', query: query})
-                //this.getAccounts()
                 this.getReports()
-            },
-            getAccounts(){
-                let app = this
-                app.loading = true
-                axios.get('/api/accounts', {
-                    params:{
-                        role: this.filter.role,
-                        status: this.filter.status
-                    }
-                }).then(function(res){
-                    app.accounts = res.data
-                    app.loading = false
-                }).catch(function(error){
-                    app.loading = false
-                })
             },
 
             getReports(){
@@ -168,5 +181,8 @@
 </script>
 
 <style scoped>
+    div.aaaa{
+        color: red;
+    }
 
 </style>
