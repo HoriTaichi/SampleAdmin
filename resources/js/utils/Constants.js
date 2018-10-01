@@ -22,5 +22,21 @@ export default {
             '3': '審査中',
             '99': '削除',
         }
+    },
+    WIDGET_STATUS:{
+        NAMES:{
+            '1': '稼働中',
+            '2': '停止中',
+            '3': '審査中',
+            '99': '削除',
+        }
+    },
+    AGGREGATE_VALUE:{
+        NAMES:{
+            'widgetImp': 'Widget Imp',
+            'click': 'Click',
+            'cv': 'CV',
+            'inviewRate': 'Inview率',
+        }
     }
 }

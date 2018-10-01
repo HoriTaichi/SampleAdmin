@@ -17,6 +17,7 @@
                 i.el-icon-menu
                 span(slot='title') 管理者用メニュー
             el-menu-item(index='3-1', @click="$router.push({name: 'accountIndex'})") アカウント管理
+            el-menu-item(index='3-2', @click="$router.push({name: 'checkTagFail'})") タグ落ち確認
 </template>
 <script>
     export default {
