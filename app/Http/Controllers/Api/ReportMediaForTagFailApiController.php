@@ -4,16 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
-use App\Models\Account;
 use Illuminate\Support\Facades\Validator;
-use App\Utils\StringUtil;
+use App\Utils\DateUtil;
 use DB;
 
 
-class AccountsApiController extends ApiController
+class ReportMediaForTagFailApiController extends ApiController
 {
     /**
-     * アカウントリスト取得
+     * レポートメディア（タグ落ち確認用)
      *
      * @param Request $request
      * @return array|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
@@ -23,23 +22,113 @@ class AccountsApiController extends ApiController
         $validator = Validator::make(
             $request->all(),
             [
-                'role' => [''],
-                'status' => ['']
+                'date' => [''],
             ]
         );
         if($validator->fails()){
             return $this->responseInvalidation($validator);
         }
 
-        $account = Account::query();
-        if(StringUtil::isNotEmpty($request->input('role'))){
-            $account->where('role', '=', $request->input('role'));
-        }
-        if(StringUtil::isNotEmpty($request->input('status'))){
-            $account->where('status', '=', $request->input('status'));
+        // 月次の場合
+        $startDate = DateUtil::getStartDateForMonth($request->input('date'));
+        $endDate = DateUtil::getEndDateForMonth($request->input('date'));
+
+        // 日付リスト　
+        $allDateList = DateUtil::getAllDateListForMonth($startDate, $endDate);
+
+
+        // 取得したデータ(MySQLでとったという定)
+        $reports = [
+            0 => [
+                'widget_id' => 1,
+                'widget_name' => 'ウィジェット１',
+                'staff_id' => 1,
+                'status' => 1,
+                'imp' => 10,
+                'click' => 5,
+                'cv' => 5,
+                'inview' => 3,
+                'target_year' => 2018,
+                'target_month' => 1,
+            ],
+            1 => [
+                'widget_id' => 1,
+                'widget_name' => 'ウィジェット１',
+                'staff_id' => 1,
+                'status' => 1,
+                'imp' => 1,
+                'click' => 0,
+                'cv' => 0,
+                'inview' => 0,
+                'target_year' => 2018,
+                'target_month' => 2,
+            ],
+            2 => [
+                'widget_id' => 7,
+                'widget_name' => 'ウィジェット7',
+                'staff_id' => 1,
+                'status' => 1,
+                'imp' => 1,
+                'click' => 0,
+                'cv' => 0,
+                'inview' => 0,
+                'target_year' => 2018,
+                'target_month' => 2,
+            ]
+        ];
+
+        //---------------------
+        // date部作成
+        //---------------------
+
+        // widget_idのリスト取得
+        $widget_id_list = array_values(array_unique(array_column($reports, 'widget_id')));
+
+
+
+        // 初期化
+        $logs = [];
+        foreach($allDateList as $currentDate){
+            $logs[$currentDate['date']] = [
+                'imp' => 0,
+                'click' => 0,
+                'cv' => 0,
+                'inview' => 0
+            ];
         }
 
-        return $account->get();
+
+        $result = [];
+        foreach($widget_id_list as $widget_id){
+
+            $datas = [
+                'logs' => $logs
+            ];
+
+            // 選択しているwidget_idのレポートデータを抽出
+            $filtered_lists = array_filter($reports, function($row) use ($widget_id){
+                return $row['widget_id'] === $widget_id;
+            });
+
+            // データ
+            foreach($filtered_lists as $filtered_list){
+                $currentDate = sprintf('%04d-%02d', $filtered_list['target_year'], $filtered_list['target_month']);
+                $datas['logs'][$currentDate]['imp'] = $filtered_list['imp'];
+                $datas['logs'][$currentDate]['click'] = $filtered_list['click'];
+                $datas['logs'][$currentDate]['cv'] = $filtered_list['cv'];
+                $datas['logs'][$currentDate]['inview'] = $filtered_list['inview'];
+                $datas['widget_id'] = $widget_id;
+                $datas['widget_name'] = $filtered_list['widget_name'];
+                $datas['staff_id'] = $filtered_list['staff_id'];
+                $datas['status'] = $filtered_list['status'];
+            }
+            $result[] = $datas;
+        }
+
+        return [
+            'dateLists' => $allDateList,
+            'details' => $result
+        ];
     }
 
     /**
@@ -60,28 +149,6 @@ class AccountsApiController extends ApiController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'accountName' => ['required'],
-                'loginId' => ['required'],
-                'password' => ['required'],
-                'role' => ['required'],
-                'status' => ['required'],
-            ]
-        );
-        if($validator->fails()){
-            return $this->responseInvalidation($validator);
-        }
-
-        // 登録
-        DB::table('accounts')->insert([
-            'role' => $request->input('role'),
-            'status' => $request->input('status'),
-            'login_id' => $request->input('loginId'),
-            'account_name' => $request->input('accountName'),
-            'password_hash' => password_hash($request->input('password'), PASSWORD_BCRYPT)
-        ]);
     }
 
     /**
