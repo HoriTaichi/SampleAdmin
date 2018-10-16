@@ -45,6 +45,7 @@
 <script>
     import axios from 'axios'
     import moment from 'moment'
+    import CommonPageMixIn from '@/utils/CommonPageMixIn'
     import ReportMixIn from '@/utils/ReportMixIn'
     import AggregateValueFilter from '@/components/filters/AggregateValueFilter'
     import AggregateAxisFilter from '@/components/filters/AggregateAxisFilter'
@@ -62,6 +63,7 @@
             HighlightFilter,
         },
         mixins: [
+            CommonPageMixIn,
             ReportMixIn
         ],
         props: {
@@ -134,7 +136,7 @@
                     isStaffs: [],
                 },
                 accounts: [],
-                isLoading: false,
+                loading: false,
                 currentModalId: '',
                 currentModalComponent: '',
                 reports: {
@@ -170,7 +172,6 @@
                     app.reports.details = res.data.details
                     app.isLoading = false
                 }).catch(function(error){
-                    alert(11)
                     app.isLoading = false
                 })
             },
@@ -181,8 +182,8 @@
                         app.filter.isStaffs = res.data
                     })
                     .catch((error) => {
-                        app.checkAxiosError(error)
-                        app.$message.error('IS担当者情報取得失敗しました')
+                        this.checkAxiosError(error)
+                        this.$message.error('IS担当者情報取得失敗しました')
                     })
             },
             getWidgetStatus(status){
@@ -342,7 +343,7 @@
         background: #fef0f0 !important;
     }
     .el-table {
-        font-size: 70% !important;
+        font-size: 30% !important;
     }
     td {
         padding: 0 !important;

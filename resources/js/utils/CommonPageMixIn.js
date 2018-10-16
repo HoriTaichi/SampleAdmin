@@ -7,7 +7,7 @@ export default {
             innerHeight: window.innerHeight
         }
     },
-    mounted () {
+    mounted() {
         // Update title
         let {title} = this.$options
         if (title) {
@@ -52,3 +52,4 @@ export default {
                 - 20 // el-card padding
         }
     }
+}
