@@ -65,8 +65,8 @@ class StaffsApiController extends ApiController
 
         // 登録
         DB::table('staffs')->insert([
-            'staff_name' => $request->input('staffName'),
-            'staff_name_ruby' => $request->input('staffNameRuby'),
+            'is_staff_name' => $request->input('staffName'),
+            'is_staff_name_ruby' => $request->input('staffNameRuby'),
             'slack_id' => $request->input('slackId'),
         ]);
     }

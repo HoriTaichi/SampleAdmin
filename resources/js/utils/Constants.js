@@ -23,20 +23,27 @@ export default {
             '99': '削除',
         }
     },
-    WIDGET_STATUS:{
-        NAMES:{
-            '1': '稼働中',
-            '2': '停止中',
-            '3': '審査中',
-            '99': '削除',
-        }
-    },
     AGGREGATE_VALUE:{
         NAMES:{
             'widgetImp': 'Widget Imp',
             'click': 'Click',
             'cv': 'CV',
             'inviewRate': 'Inview率',
+        }
+    },
+    WIDGET_STATUS:{
+        NAMES:{
+            '1': 'アクティブ',
+            '2': '停止',
+            '3': '設定中',
+        }
+    },
+    AGGREGATE_VALUE:{
+        NAMES:{
+            'widgetImp': 'widget_imp',
+            'ctr': 'CTR',
+            'inviewRate': 'inview率',
+            'click': 'クリック数',
         }
     }
 }

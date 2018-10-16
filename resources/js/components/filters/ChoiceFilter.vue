@@ -1,6 +1,6 @@
 <template lang="pug">
     span
-        el-button(@click="showFilter") {{title}} : {{buttonLabel}}
+        el-button(class="choice-filter-button" type="primary" @click="showFilter") {{title}}：{{buttonLabel}}
         el-dialog(:title="title", :visible.sync="dialogVisible", @close="cancelFilter")
             el-form()
                 template(v-for="(item) of labelList")
@@ -8,53 +8,60 @@
                         el-radio(v-model="tmpValue", :label="item") {{item.label}}
             span.dialog-footer(slot="footer")
                 el-button(@click="cancelFilter") キャンセル
-                el-button(type="primary" @click="submitFilter") 適用
+                el-button(@click="submitFilter") 適用
 </template>
+
 <script>
     export default {
         abstract: true, // 抽象クラス
-        props:{
-            value: String
+        props: {
+            value: String,
         },
-        data() {
+        data () {
             return {
                 dialogVisible: false,
-                tmpValue :'',
+                tmpValue: '',
                 title: '',
-                labelList: []
-            };
+                labelList: [],
+            }
         },
-        computed:{
-            buttonLabel: function(){
+        computed: {
+            buttonLabel: function() {
                 let label = ''
-                for(let item of this.labelList){
-                    if(item.value == this.value){
+                for (let item of this.labelList) {
+                    if (item.value == this.value) {
                         label = item.label
                     }
                 }
                 return label
-            }
+            },
         },
         methods: {
-            showFilter: function(){
-                for(let item of this.labelList){
-                    if(item.value === this.value){
+            showFilter: function () {
+                for (let item of this.labelList) {
+                    if (item.value == this.value) {
                         this.tmpValue = item
                     }
                 }
                 this.dialogVisible = true
             },
-            cancelFilter: function(){
+            cancelFilter: function () {
                 this.dialogVisible = false
                 this.tmpValue = this.value
             },
-            submitFilter: function(){
+            submitFilter: function () {
                 this.dialogVisible = false
                 this.$emit('input', this.tmpValue.value)
                 this.$emit('changeValue')
-            }
-        }
+            },
+        },
     }
 </script>
-<style scoped>
+
+<style>
+    .choice-filter-button {
+        padding: 0.8em !important;
+        font-size: 85% !important;
+        min-width: 12% !important;
+    }
 </style>
